@@ -64,25 +64,175 @@ void MainObject::set_clips() {
     }
 }
 
-void MainObject::Show(SDL_Renderer* des) {
+
+void MainObject::Show(SDL_Renderer* des)
+{
     LoadImg("img//player.png", des);
 
-    if (!check_dead_player) {
-        frame_ ++;
-    }
-    if (frame_ >= MAX_FRAME && !check_dead_player) {
+    if(!check_dead_player)
+    frame_ ++;
+
+    if(frame_ >= MAX_FRAME && !check_dead_player)
+    {
         frame_ = 0;
     }
-    rect_.x = x_pos - map_x_;// vi tri ban dau - vitri map cuon => vt hien tai
+    rect_.x = x_pos - map_x_;
     rect_.y = y_pos - map_y_;
-    
-          
+
+    switch (status_)
+    {
+        case WALK_LEFT:
+        {
+            flip_ = SDL_FLIP_HORIZONTAL;
+        }
+            break;
+        case WALK_RIGHT:
+        {
+            if(flip_ == SDL_FLIP_HORIZONTAL)
+                flip_ = SDL_FLIP_NONE;
+        }
+        break;
         
-    SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame*RATIO_PLAYER, height_frame*RATIO_PLAYER};
-    SDL_Rect* current_clip = &frame_clip[frame_];
-    SDL_RenderCopyEx(des, p_Object_, current_clip, &renderQuad, 0, NULL, flip_);
+        case WALK_UP:
+        {
+            if(input_type_.direction_)
+            {
+                flip_ = SDL_FLIP_HORIZONTAL;
+            }
+            else
+            {
+                if(flip_ == SDL_FLIP_HORIZONTAL)
+                    flip_ = SDL_FLIP_NONE;
+            }
+        }
+        break;
+
+        case WALK_DOWN:
+        {
+            if(input_type_.direction_)
+            {
+                flip_ = SDL_FLIP_HORIZONTAL;
+            }
+            else
+            {
+                if(flip_ == SDL_FLIP_HORIZONTAL)
+                    flip_ = SDL_FLIP_NONE;
+            }
+        }
+        break;
+
+        case ATTACK:
+        {
+            if(input_type_.direction_)
+            {
+                flip_ = SDL_FLIP_HORIZONTAL;               
+            }
+            else
+            {
+                if(flip_ == SDL_FLIP_HORIZONTAL)
+                    flip_ = SDL_FLIP_NONE;
+            }
+        }
+        break;
+
+        case DEAD:
+        {
+            if(input_type_.direction_)
+            {
+                flip_ = SDL_FLIP_HORIZONTAL;
+            }
+            else
+            {
+                if(flip_ == SDL_FLIP_HORIZONTAL)
+                    flip_ = SDL_FLIP_NONE;
+            }
+        }
+        break;
+
+    }
     
-    SDL_DestroyTexture(p_Object_);  //da dung xong
+    
+
+    if(check_attack)
+    {
+        //for(int i = 0; i < MAX_FRAME - short_frame; i++)
+        {
+            SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame*RATIO_PLAYER, height_frame*RATIO_PLAYER};
+            SDL_Rect* current_clip = &frame_clip[start_attack];
+            SDL_RenderCopyEx(des, p_Object_, current_clip, &renderQuad, 0, NULL, flip_);
+            start_attack ++;
+            if(start_attack >= MAX_FRAME - short_frame)
+            {
+                if(input_type_.left_ == 1)
+                {
+                    status_ = WALK_LEFT;
+                    start_frame = 1;
+                }
+                if(input_type_.right_ == 1)
+                {
+                    status_ = WALK_RIGHT;
+                    start_frame = 1;
+                }
+                if(input_type_.up_ == 1)
+                {
+                    status_ = WALK_UP;
+                    start_frame = 1;
+                }
+                if(input_type_.down_ == 1)
+                {
+                    status_ = WALK_DOWN;
+                    start_frame = 1;
+                }
+                if(input_type_.right_ == 0 && input_type_.left_ == 0 && input_type_.up_ == 0 && input_type_.down_ == 0)
+                {
+                    status_ = WALK_STOP;
+                    start_frame = 0;
+                }
+                start_attack = 0;
+                check_attack = false;
+                short_frame = 0;
+            }
+        }
+    }
+    else
+    {
+        if(check_dead_player)
+        {
+            start_frame = 4;
+            status_ = DEAD;
+            check_attack = false;
+            if(delay_frame <= 0)
+                {
+                    delay_frame = DELAY_FRAME;
+                    frame_ ++;
+                }
+                else
+                {
+                    delay_frame--;
+                }
+            if(frame_ >= MAX_FRAME - short_frame - 1)
+            {
+                frame_ = MAX_FRAME - short_frame-1;
+                status_ = DEAD;
+                start_frame = 4;
+                SDL_Delay(150);
+            }
+                
+        }
+        
+        
+        SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame*RATIO_PLAYER, height_frame*RATIO_PLAYER};
+        SDL_Rect* current_clip = &frame_clip[frame_];
+        SDL_RenderCopyEx(des, p_Object_, current_clip, &renderQuad, 0, NULL, flip_);
+    }
+
+
+    // SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame*RATIO_PLAYER, height_frame*RATIO_PLAYER};
+    // SDL_Rect* current_clip = &frame_clip[frame_];
+    // SDL_RenderCopyEx(des, p_Object_, current_clip, &renderQuad, 0, NULL, flip_);
+
+    // SDL_DestroyTexture(p_Object_);  //da dung xong
+    
 }
 
 void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer* screen) {

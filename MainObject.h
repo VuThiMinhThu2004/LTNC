@@ -21,7 +21,7 @@ public:
         WALK_UP = 3,
         WALK_DOWN = 4,
         ATTACK = 5,
-
+        DEAD = 7,
     };
 
     bool LoadImg(std::string path, SDL_Renderer* screen);
