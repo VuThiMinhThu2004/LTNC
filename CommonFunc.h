@@ -30,7 +30,7 @@ const int RENDER_DRAW_COLOR = 0xff; // = 255
 #define BLANK_TILE 0
 #define RATIO_PLAYER 2
 #define RATIO_MAP 2
-#define SIZE_BACK 0.75
+#define SIZE_BACK 1
 
 #define MAX_MAP_X 80
 #define MAX_MAP_Y 50
