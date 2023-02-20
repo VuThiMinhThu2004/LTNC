@@ -75,8 +75,9 @@ void MainObject::Show(SDL_Renderer* des)
     if(frame_ >= MAX_FRAME && !check_dead_player) {
         frame_ = 0;
     }
+
     rect_.x = x_pos - map_x_;
-    rect_.y = y_pos - map_y_;
+    rect_.y = y_pos - map_y_; // toa do hien tai = ... - do cuon chieu cua map
 
     switch (status_) {
         case WALK_LEFT:
@@ -188,8 +189,8 @@ void MainObject::Show(SDL_Renderer* des)
             status_ = DEAD;
             check_attack = false;
             if (delay_frame <= 0) {
-                    delay_frame = DELAY_FRAME;
-                    frame_ ++;
+                delay_frame = DELAY_FRAME;
+                frame_ ++;
             }
             else {
                 delay_frame--;
@@ -306,13 +307,13 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer* screen) {
                     default:
                         break;
                 }
-                //if (!check_attack) {
+                if (!check_attack) {
                     if (input_type_.right_ == 0 && input_type_.left_ == 0 && input_type_.up_ == 0 && input_type_.down_ == 0) {
                         status_ = WALK_STOP;
                         start_frame = 0;
                         short_frame = 0;
                     }
-                //}
+                }
             }
         }
     }
@@ -334,12 +335,12 @@ void MainObject::DoPlayer(Map& map_data) {
     else if(input_type_.down_ == 1) {
         y_val += PLAYER_SPEED;
     }
-    CheckToMap(map_data);
+    CheckToMap(map_data); // Danh dau ***
     CenterEntityOnMap(map_data); // tinh ra thong so cua ban do
  }
 
  void MainObject::CenterEntityOnMap(Map& map_data) {
-    map_data.start_x_ = x_pos - (SCREEN_WIDTH/2);// + width_frame*RATIO_PLAYER;// di chuyen 1/2 ban dao thi ban do bat dau cuon theo
+    map_data.start_x_ = x_pos - (SCREEN_WIDTH/2) + width_frame*RATIO_PLAYER;// di chuyen 1/2 ban dao thi ban do bat dau cuon theo
     if (map_data.start_x_ < 0) {
         map_data.start_x_ = 0;
     }
@@ -347,12 +348,12 @@ void MainObject::DoPlayer(Map& map_data) {
         map_data.start_x_ = map_data.max_x_ - SCREEN_WIDTH;
     }
 
-    map_data.start_y_ = y_pos - (SCREEN_HEIGHT/2);// + height_frame*RATIO_PLAYER;; // cuon doc 1/2 map
+    map_data.start_y_ = y_pos - (SCREEN_HEIGHT/2) + height_frame*RATIO_PLAYER;; // cuon doc 1/2 map
     if (map_data.start_y_ < 0) {
         map_data.start_y_  = 0;
     }
     else if (map_data.start_y_ + SCREEN_HEIGHT >= map_data.max_y_) {
-        map_data.start_y_ = map_data.start_y_ - SCREEN_HEIGHT;
+        map_data.start_y_ = map_data.max_y_ - SCREEN_HEIGHT;
     }
  }
 
@@ -367,10 +368,10 @@ void MainObject::DoPlayer(Map& map_data) {
     //check ...(ngang)
     int height_min = height_frame < TILE_SIZE ? height_frame : TILE_SIZE;
     x1 = (x_pos + x_val)/TILE_SIZE;
-    x2 = (x_pos + x_val + width_frame*RATIO_PLAYER - 1)/TILE_SIZE;
+    x2 = (x_pos + x_val + width_frame*RATIO_PLAYER - 1)/TILE_SIZE ;//- SIZE_BACK;
 
     y1 = (y_pos)/TILE_SIZE;
-    y2 = (y_pos + height_min*RATIO_PLAYER - 1) /TILE_SIZE;
+    y2 = (y_pos + height_min*RATIO_PLAYER - 1)/TILE_SIZE;
 
     /*
         x1,y1..........x2,y1
@@ -422,7 +423,7 @@ void MainObject::DoPlayer(Map& map_data) {
         }        
         else if (y_val < 0) {
             for(int i = x1 + SIZE_BACK*2; i <= x2 - SIZE_BACK; i++) {
-                if (map_data.tile[y2][i] != BLANK_TILE) {
+                if (map_data.tile[y2][i] != BLANK_TILE) { // bug
                     y_pos = (y1 - SIZE_BACK + 1)*TILE_SIZE;
                     y_val = 0;
                 }

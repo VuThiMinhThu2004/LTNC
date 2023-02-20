@@ -63,7 +63,7 @@ void close() {
 int main( int argc, char *argv[] ) {
 
     Time fps_time;
-
+    //srand((int)time(0));
     if(InitData() == false) {
         return -1;
     }
@@ -73,17 +73,17 @@ int main( int argc, char *argv[] ) {
     }
 
     GameMap game_map;
-    game_map.LoadMap("map/Map1/map.txt");
+    game_map.LoadMap("map/Map1/map_layer0.txt");
     game_map.LoadTiles(g_screen);
 
 
-    // GameMap game_map1;
-    // game_map1.LoadMap("map/Map1/map1.txt");
-    // game_map1.LoadTiles(g_screen);
+    GameMap game_map1;
+    game_map1.LoadMap("map/Map1/map_layer1.txt");
+    game_map1.LoadTiles(g_screen);
 
-    // GameMap game_map2;
-    // game_map2.LoadMap("map/Map1/map2.txt");
-    // game_map2.LoadTiles(g_screen);
+    GameMap game_map2;
+    game_map2.LoadMap("map/Map1/map_layer2.txt");
+    game_map2.LoadTiles(g_screen);
 
     MainObject p_player;
     p_player.LoadImg("img/player.png",g_screen);
@@ -104,15 +104,32 @@ int main( int argc, char *argv[] ) {
         SDL_RenderClear(g_screen);
 
         //g_background.Render(g_screen, NULL);
-
+                
         Map map_data = game_map.getMap();
+        // Map map_data1 = game_map1.getMap();
+        // Map map_data2 = game_map2.getMap();
+
 
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_); // chia thanh map nho hon
+        // p_player.SetMapXY(map_data1.start_x_, map_data1.start_y_); // chia thanh map nho hon
+        // p_player.SetMapXY(map_data2.start_x_, map_data2.start_y_); // chia thanh map nho hon
 
         p_player.DoPlayer(map_data);
+        // p_player.DoPlayer(map_data1);
+        // p_player.DoPlayer(map_data2);
+        //p_player.CheckToMap(map_data);
+        
 
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen); 
+
+
+        // game_map1.SetMap(map_data1);
+        // game_map1.DrawMap(g_screen); 
+
+
+        // game_map2.SetMap(map_data2);
+        // game_map2.DrawMap(g_screen); 
 
 
         p_player.set_clips();
