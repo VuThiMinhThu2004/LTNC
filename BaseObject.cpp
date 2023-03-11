@@ -13,7 +13,7 @@ BaseObject::~BaseObject() { // ham huy doi tuong
 }
 
 bool BaseObject::LoadImg(std::string path,SDL_Renderer* screen) {
-    Free();
+    //Free();
 
     SDL_Texture* new_Texture = NULL;
     
@@ -36,7 +36,7 @@ bool BaseObject::LoadImg(std::string path,SDL_Renderer* screen) {
 
 void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip)
 {
-    SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w, rect_.h};
+    SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w*RATIO_MAP, rect_.h*RATIO_MAP};
 
     SDL_RenderCopy(des, p_Object_, clip, &renderquad);
 }

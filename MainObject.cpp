@@ -1,5 +1,6 @@
-#include "CommonFunc.h"
 #include "MainObject.h"
+//#include "Monster.h"
+
 
 #define PLAYER_SPEED 8
 
@@ -15,12 +16,22 @@ MainObject::MainObject() {
     attack_frame = 2;
 
     delay_frame = DELAY_FRAME;
-    dead_frame = 4;
+    hp_player = HP_PLAYER;
+
+    dead_frame = 4; 
+    
+
+    check_hp_player = false;
     check_dead_player = false;
+    check_menu_dead = false;
 
     start_attack = 0;
     check_attack = false;
 
+    // attack_monster.x = 0;
+    // attack_monster.y = 0;
+    // attack_monster.w = 0;
+    // attack_monster.h = 0;
 
     status_ = -1;
     input_type_.left_ = 0;
@@ -65,14 +76,14 @@ void MainObject::set_clips() {
 }
 
 
-void MainObject::Show(SDL_Renderer* des)
-{
+void MainObject::Show(SDL_Renderer* des) {
     LoadImg("img//player.png", des);
 
-    if(!check_dead_player)
+    if (!check_dead_player) {
         frame_ ++;
+    }
 
-    if(frame_ >= MAX_FRAME && !check_dead_player) {
+    if (frame_ >= MAX_FRAME && !check_dead_player) {
         frame_ = 0;
     }
 
@@ -87,20 +98,18 @@ void MainObject::Show(SDL_Renderer* des)
             break;
         case WALK_RIGHT:
         {
-            if(flip_ == SDL_FLIP_HORIZONTAL)
+            if (flip_ == SDL_FLIP_HORIZONTAL)
                 flip_ = SDL_FLIP_NONE;
         }
         break;
         
         case WALK_UP:
         {
-            if(input_type_.direction_)
-            {
+            if (input_type_.direction_) {
                 flip_ = SDL_FLIP_HORIZONTAL;
             }
-            else
-            {
-                if(flip_ == SDL_FLIP_HORIZONTAL)
+            else {
+                if (flip_ == SDL_FLIP_HORIZONTAL)
                     flip_ = SDL_FLIP_NONE;
             }
         }
@@ -108,13 +117,11 @@ void MainObject::Show(SDL_Renderer* des)
 
         case WALK_DOWN:
         {
-            if(input_type_.direction_)
-            {
+            if (input_type_.direction_) {
                 flip_ = SDL_FLIP_HORIZONTAL;
             }
-            else
-            {
-                if(flip_ == SDL_FLIP_HORIZONTAL)
+            else {
+                if (flip_ == SDL_FLIP_HORIZONTAL)
                     flip_ = SDL_FLIP_NONE;
             }
         }
@@ -122,36 +129,43 @@ void MainObject::Show(SDL_Renderer* des)
 
         case ATTACK:
         {
-            if(input_type_.direction_)
-            {
-                flip_ = SDL_FLIP_HORIZONTAL;               
+            if (input_type_.direction_) {
+                flip_ = SDL_FLIP_HORIZONTAL;   
+
+                // attack_monster.x = rect_.x - ATTACK_RANGE/2;
+                // attack_monster.w = ATTACK_RANGE*2;
+                // attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
+                // attack_monster.h = ATTACK_RANGE;            
             }
-            else
-            {
-                if(flip_ == SDL_FLIP_HORIZONTAL)
+            else {
+                if (flip_ == SDL_FLIP_HORIZONTAL)
                     flip_ = SDL_FLIP_NONE;
+                
+                // attack_monster.x = rect_.x;
+                // attack_monster.w = ATTACK_RANGE*2;
+                // attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
+                // attack_monster.h = ATTACK_RANGE;
             }
         }
         break;
 
         case DEAD:
         {
-            if(input_type_.direction_)
-            {
+            if (input_type_.direction_) {
                 flip_ = SDL_FLIP_HORIZONTAL;
             }
-            else
-            {
-                if(flip_ == SDL_FLIP_HORIZONTAL)
+            else {
+                if (flip_ == SDL_FLIP_HORIZONTAL)
                     flip_ = SDL_FLIP_NONE;
             }
         }
         break;
     }    
 
+
     if (check_attack) {
-        //for(int i = 0; i < MAX_FRAME - short_frame; i++)
-        {
+        //for(int i = 0; i < MAX_FRAME - short_frame; i++) {
+        
             SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame*RATIO_PLAYER, height_frame*RATIO_PLAYER};
             SDL_Rect* current_clip = &frame_clip[start_attack];
             SDL_RenderCopyEx(des, p_Object_, current_clip, &renderQuad, 0, NULL, flip_);
@@ -181,13 +195,14 @@ void MainObject::Show(SDL_Renderer* des)
                 check_attack = false;
                 short_frame = 0;
             }
-        }
+        //}
     }
     else {
         if (check_dead_player) {
             start_frame = 4;
             status_ = DEAD;
             check_attack = false;
+            check_hp_player = false;
             if (delay_frame <= 0) {
                 delay_frame = DELAY_FRAME;
                 frame_ ++;
@@ -196,9 +211,10 @@ void MainObject::Show(SDL_Renderer* des)
                 delay_frame--;
             }
             if (frame_ >= MAX_FRAME - short_frame - 1) {
-                frame_ = MAX_FRAME - short_frame-1;
+                frame_ = MAX_FRAME - short_frame - 1;
                 status_ = DEAD;
                 start_frame = 4;
+                //check_menu_dead = true;
                 SDL_Delay(150);
             }                
         }        
@@ -335,7 +351,7 @@ void MainObject::DoPlayer(Map& map_data) {
     else if(input_type_.down_ == 1) {
         y_val += PLAYER_SPEED;
     }
-    CheckToMap(map_data); // Danh dau ***
+    //CheckToMap(map_data); // Danh dau ***
     CenterEntityOnMap(map_data); // tinh ra thong so cua ban do
  }
 
@@ -368,7 +384,7 @@ void MainObject::DoPlayer(Map& map_data) {
     //check ...(ngang)
     int height_min = height_frame < TILE_SIZE ? height_frame : TILE_SIZE;
     x1 = (x_pos + x_val)/TILE_SIZE;
-    x2 = (x_pos + x_val + width_frame*RATIO_PLAYER - 1)/TILE_SIZE ;//- SIZE_BACK;
+    x2 = (x_pos + x_val + width_frame*RATIO_PLAYER - 1)/TILE_SIZE - SIZE_BACK;
 
     y1 = (y_pos)/TILE_SIZE;
     y2 = (y_pos + height_min*RATIO_PLAYER - 1)/TILE_SIZE;
@@ -407,7 +423,7 @@ void MainObject::DoPlayer(Map& map_data) {
     x1 = (x_pos)/TILE_SIZE;
     x2 = (x_pos + width_min*RATIO_PLAYER)/TILE_SIZE;
 
-    y1 = (y_pos + y_val)/TILE_SIZE;
+    y1 = (y_pos + y_val)/TILE_SIZE + SIZE_BACK;
     y2 = (y_pos + y_val + height_frame*RATIO_PLAYER - 1)/TILE_SIZE;
 
     if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
@@ -421,9 +437,9 @@ void MainObject::DoPlayer(Map& map_data) {
                 }
             }                      
         }        
-        else if (y_val < 0) {
+        else if (y_val < 0) { // di len
             for(int i = x1 + SIZE_BACK*2; i <= x2 - SIZE_BACK; i++) {
-                if (map_data.tile[y2][i] != BLANK_TILE) { // bug
+                if (map_data.tile[y1][i] != BLANK_TILE) { //bug
                     y_pos = (y1 - SIZE_BACK + 1)*TILE_SIZE;
                     y_val = 0;
                 }
@@ -448,3 +464,68 @@ void MainObject::DoPlayer(Map& map_data) {
         y_pos = map_data.max_y_ - TILE_SIZE - height_frame - 1;
     }
  }
+
+ 
+void MainObject::PlayerDead()
+{
+    if (hp_player - DAMAGE_TO_PLAYER >= 0) {
+        if (!check_dead_player) {
+            check_hp_player = true;
+        }
+        hp_player -= DAMAGE_TO_PLAYER;
+    }
+    else {
+        check_dead_player = true;
+        check_hp_player = false;
+        check_attack = false;
+        hp_player = 0;
+        input_type_.left_ = 0;
+        input_type_.right_ = 0;
+        input_type_.up_ = 0;
+        input_type_.down_ = 0;
+        status_ = DEAD;
+        start_frame = 4;
+        short_frame = 3;
+    }
+}
+
+void MainObject::SetMenu() {
+    check_menu_dead = false;
+}
+
+void MainObject::RevivalPlayer() {
+    frame_ = 0;
+    x_pos = 0;
+    y_pos = 0;
+    x_val = 0;
+    y_val = 0;
+    width_frame = 0;
+    height_frame = 0;
+    start_frame = 0;
+    attack_frame = 2;
+
+    delay_frame = DELAY_FRAME;
+
+    hp_player = HP_PLAYER;
+
+    check_hp_player = false;
+    check_dead_player = false;
+    check_menu_dead = false;
+
+    start_attack = 0;
+    check_attack = false;
+    attack_monster.x = 0;
+    attack_monster.y = 0;
+    attack_monster.w = 0;
+    attack_monster.h = 0;
+
+    dead_frame = 4;
+
+    status_ = -1;
+    input_type_.left_ = 0;
+    input_type_.right_ = 0;
+    input_type_.down_ = 0;
+    input_type_.up_ = 0;
+    map_x_ = 0;
+    map_y_ = 0;
+}
