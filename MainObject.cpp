@@ -28,10 +28,10 @@ MainObject::MainObject() {
     start_attack = 0;
     check_attack = false;
 
-    // attack_monster.x = 0;
-    // attack_monster.y = 0;
-    // attack_monster.w = 0;
-    // attack_monster.h = 0;
+    attack_monster.x = 0;
+    attack_monster.y = 0;
+    attack_monster.w = 0;
+    attack_monster.h = 0;
 
     status_ = -1;
     input_type_.left_ = 0;
@@ -132,19 +132,19 @@ void MainObject::Show(SDL_Renderer* des) {
             if (input_type_.direction_) {
                 flip_ = SDL_FLIP_HORIZONTAL;   
 
-                // attack_monster.x = rect_.x - ATTACK_RANGE/2;
-                // attack_monster.w = ATTACK_RANGE*2;
-                // attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
-                // attack_monster.h = ATTACK_RANGE;            
+                attack_monster.x = rect_.x - ATTACK_RANGE/2;
+                attack_monster.w = ATTACK_RANGE*2;
+                attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
+                attack_monster.h = ATTACK_RANGE;            
             }
             else {
                 if (flip_ == SDL_FLIP_HORIZONTAL)
                     flip_ = SDL_FLIP_NONE;
                 
-                // attack_monster.x = rect_.x;
-                // attack_monster.w = ATTACK_RANGE*2;
-                // attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
-                // attack_monster.h = ATTACK_RANGE;
+                attack_monster.x = rect_.x;
+                attack_monster.w = ATTACK_RANGE*2;
+                attack_monster.y = rect_.y + SIZE_BACK*TILE_SIZE;
+                attack_monster.h = ATTACK_RANGE;
             }
         }
         break;
@@ -432,14 +432,13 @@ void MainObject::DoPlayer(Map& map_data) {
                 if (map_data.tile[y2][i] != BLANK_TILE) {
                     y_pos = y2*TILE_SIZE;
                     y_pos -= (height_frame*RATIO_PLAYER + 1);
-                    y_val = 0;
-                    // bool ... = true; // check con tren ban do 
+                    y_val = 0;         
                 }
             }                      
         }        
         else if (y_val < 0) { // di len
             for(int i = x1 + SIZE_BACK*2; i <= x2 - SIZE_BACK; i++) {
-                if (map_data.tile[y1][i] != BLANK_TILE) { //bug
+                if (map_data.tile[y1][i] != BLANK_TILE) { 
                     y_pos = (y1 - SIZE_BACK + 1)*TILE_SIZE;
                     y_val = 0;
                 }
@@ -466,8 +465,7 @@ void MainObject::DoPlayer(Map& map_data) {
  }
 
  
-void MainObject::PlayerDead()
-{
+void MainObject::PlayerDead() {
     if (hp_player - DAMAGE_TO_PLAYER >= 0) {
         if (!check_dead_player) {
             check_hp_player = true;

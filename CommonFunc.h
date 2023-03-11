@@ -13,13 +13,15 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include "BaseObject.h"
+#include "TextObject.h"
+#include "SoundsEff.h"
 
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
 // Screen
-const int FPS = 16;
+const int FPS = 18;
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 800;
 const int SCREEN_BPP = 40;
@@ -35,7 +37,7 @@ const int RENDER_DRAW_COLOR = 0xff; // = 255
 #define BLANK_TILE 0
 #define RATIO_PLAYER 2
 #define RATIO_MAP 2
-#define SIZE_BACK 1
+#define SIZE_BACK 0.75
 
 #define MAX_MAP_X 80
 #define MAX_MAP_Y 50

@@ -3,9 +3,6 @@
 
 
 #include "CommonFunc.h"
-// #include "BaseObject.h"
-// #include "Map.h"
-// #include "MainObject.h"
 
 
 class MainObject : public BaseObject {
