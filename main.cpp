@@ -166,12 +166,13 @@ int main( int argc, char *argv[] ) {
 
 
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_); // chia thanh map nho hon
-        p_player.SetMapXY(collision_data.start_x_, collision_data.start_y_);
+
         p_player.SetMapXY(map_data1.start_x_, map_data1.start_y_); // chia thanh map nho hon
-         
+        p_player.SetMapXY(collision_data.start_x_, collision_data.start_y_);
+
         p_player.DoPlayer(map_data);
-        p_player.DoPlayer(collision_data);
         p_player.DoPlayer(map_data1);
+        p_player.DoPlayer(collision_data);
         p_player.CheckToMap(collision_data);
 
         
@@ -179,13 +180,12 @@ int main( int argc, char *argv[] ) {
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen); 
 
-        collision_map.SetMap(collision_data);
-        collision_map.DrawMap(g_screen);
-
         game_map1.SetMap(map_data1);
         game_map1.DrawMap(g_screen); 
 
-
+        collision_map.SetMap(collision_data);
+        collision_map.DrawMap(g_screen);
+        
         //MONSTER
 
 

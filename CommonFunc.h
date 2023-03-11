@@ -84,7 +84,7 @@ typedef struct Map {
     int max_x_;
     int max_y_;
 
-    int tile[MAX_MAP_X][MAX_MAP_Y];
+    int tile[MAX_MAP_Y][MAX_MAP_X];
     
     int x[MAX_MONSTER];
     int y[MAX_MONSTER];
