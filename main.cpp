@@ -63,14 +63,8 @@ bool InitData() {
     return success;
 }
 
-// bool LoadBackground() {
-//     bool ret = g_background.LoadImg("assets/menu.png", g_screen);
-//     if (ret == false)   return false;
-//     return true;
-// }
 
 void close() {
-    //g_background.Free();
 
     SDL_DestroyRenderer(g_screen);
     g_screen = NULL;
@@ -134,7 +128,7 @@ int main( int argc, char *argv[] ) {
     collision_map.LoadTiles(g_screen);
 
     MainObject p_player;
-
+    p_player.LoadImg("img/player.png",g_screen);
 
     Monster monster_map;
     monster_map.LoadMap("map/Map2/monster.txt");
@@ -152,7 +146,7 @@ int main( int argc, char *argv[] ) {
     Sounds.PlaySound("music");
 
 
-    p_player.LoadImg("img/player.png",g_screen);
+    // p_player.LoadImg("img/player.png",g_screen);
 
     
     int point = 0;
@@ -160,25 +154,23 @@ int main( int argc, char *argv[] ) {
     bool is_quit = false;  
 
     int ret_menu = p_menu.ShowMenu(g_screen, font_menu);
-    if (ret_menu == 1)
-    {
-        is_quit = false;
+    if (ret_menu == 1) {
+        is_quit = true;
     }
     else
-        is_quit = true;
+        is_quit = false;
 
     bool start_game = true;
-    while(!is_quit) {
+    while (!is_quit) {
 
         if (start_game)
         {
             is_quit = !p_menu.ShowMenu(g_screen, font_menu);
-            if(!is_quit)
-            {
+            if (!is_quit) {
                 start_game = false;
             }
             else
-            continue;
+                continue;
             p_player.RevivalPlayer();
             point = 0;
         }
@@ -199,10 +191,8 @@ int main( int argc, char *argv[] ) {
             p_player.HandelInputAction(g_event, g_screen);
         }
 
-       // SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
         SDL_RenderClear(g_screen);
 
-        //g_background.Render(g_screen, NULL);
                 
         Map map_data = game_map.getMap();
         Map map_data1 = game_map1.getMap();

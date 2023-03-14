@@ -13,7 +13,6 @@ public:
 
 private:
     std::map<std::string,Mix_Chunk* > Chunks;
-
 };
 
 

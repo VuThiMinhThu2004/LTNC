@@ -2,14 +2,15 @@
 
 
 TextObject::TextObject() {
-    text_color.r = 255;
-    text_color.g = 255;
-    text_color.b = 255;
+    // text_color.r = 255;
+    // text_color.g = 255;
+    // text_color.b = 255;
+    text_color = {255, 255, 255};
     texture = NULL;
 }
 
 TextObject::~TextObject() {
-
+    Free();
 }
 
 bool TextObject::LoadFromRenderText(TTF_Font* font, SDL_Renderer* screen) {
@@ -32,9 +33,7 @@ void TextObject::Free() {
 }
 
 void TextObject::SetColor(Uint8 red, Uint8 green, Uint8 blue) {
-    text_color.r = red;
-    text_color.g = green;;
-    text_color.b = blue;
+    text_color = {red, green, blue};
 }
 
 void TextObject::SetColor(int type) {
@@ -60,5 +59,5 @@ void TextObject::RenderText(SDL_Renderer* screen, int xp, int yp, SDL_Rect* clip
     }
 
     SDL_RenderCopyEx(screen, texture, clip, &renderQuad, angle, center, flip);
-    SDL_DestroyTexture(texture);
+    //SDL_DestroyTexture(texture);
 }

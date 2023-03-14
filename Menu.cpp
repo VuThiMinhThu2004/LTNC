@@ -10,11 +10,6 @@ Menu::~Menu() {
 }
 
 bool Menu::LoadMenu(std::string path, SDL_Renderer* des) {
-    // bool ret = g_background.LoadImg(path, g_screen);
-    // if( ret == false )
-    //     return false;
-    // else 
-    //     return true;
     return BaseObject::LoadImg(path, des);
 }
 
@@ -24,14 +19,18 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
         return 1;
     }
 
-    const int kMenuItemNum = 2;
+    const int kMenuItemNum = 3;
     SDL_Rect pos_arr[kMenuItemNum];
+
+
+    pos_arr[2].x = 150;
+    pos_arr[2].y = 200;
+
     pos_arr[1].x = 150;
-    pos_arr[1].y = 200;
+    pos_arr[1].y = 250;
 
     pos_arr[0].x = 150;
-    pos_arr[0].y = 250;
-
+    pos_arr[0].y = 300;
 
     TextObject text_menu[kMenuItemNum];
 
@@ -39,12 +38,18 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
     text_menu[0].SetText("Exit");
     text_menu[0].SetColor(TextObject::BLACK_TEXT);
 
-    text_menu[1].SetText("Play Game");
+    text_menu[1].SetText("Options");
     text_menu[1].SetColor(TextObject::BLACK_TEXT);
+
+    text_menu[2].SetText("Play Game");
+    text_menu[2].SetColor(TextObject::BLACK_TEXT);
 
     for (int i = 0; i < kMenuItemNum; ++i) {
         text_menu[i].LoadFromRenderText(font, des);
     }
+
+    pos_arr[2].w = text_menu[1].GetWidth();
+    pos_arr[2].h = text_menu[1].GetHeight();
 
     pos_arr[1].w = text_menu[1].GetWidth();
     pos_arr[1].h = text_menu[1].GetHeight();
@@ -56,9 +61,11 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
     int xm = 0;
     int ym = 0;
 
+    // Event handler
     SDL_Event m_event;
 
     while (true) {
+        
         SDL_RenderClear(des);
         SDL_RenderCopy(des, this->p_Object_, NULL, NULL);
         for (int i = 0; i < kMenuItemNum; ++i) {
@@ -66,10 +73,10 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
             text_menu[i].RenderText(des, pos_arr[i].x, pos_arr[i].y);
         }
 
-    
+        // Handle events on queue
         SDL_RenderPresent(des);
         while (SDL_PollEvent(&m_event)) {
-        
+            // User requests quitb
             switch (m_event.type) {
                 case SDL_QUIT:
                 {
@@ -101,7 +108,6 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
 
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                
                     xm = m_event.button.x;
                     ym = m_event.button.y;
                     for (int i = 0; i < kMenuItemNum; i++) {
@@ -110,7 +116,7 @@ int Menu::ShowMenu(SDL_Renderer* des, TTF_Font* font) {
                         }
                     }
                 }
-                break;
+                break;                
 
                 case SDL_KEYDOWN:
                     if (m_event.key.keysym.sym == SDLK_ESCAPE) {
