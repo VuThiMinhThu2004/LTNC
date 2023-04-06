@@ -1,17 +1,18 @@
-#ifndef COMMON_FUNCTION_H_
-#define COMMON_FUNCTION_H_
+#pragma once
 
 #include <windows.h>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <time.h>
 #include <math.h>
 #include <stdlib.h>
+#include <vector>
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
+
 #include "BaseObject.h"
 #include "TextObject.h"
 #include "SoundsEff.h"
@@ -100,5 +101,3 @@ namespace SDLCommonFunc {
     bool CheckMove(const SDL_Rect& object1, const SDL_Rect& object2);
     int CheckDirection(const SDL_Rect& object1, const SDL_Rect& object2);
 }
-
-#endif
